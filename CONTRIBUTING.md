@@ -8,7 +8,7 @@ We love pull requests from everyone. By participating in this project, you agree
 
 - If you found a bug or need a new feature, you can submit an [issue](https://github.com/renanmav/pycst/issues)
 
-- If you would like to chat with other contributors to pycst, consider joining the [[![Gitter](https://badges.gitter.im/pycst/general.svg)](https://gitter.im/pycst/general?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
+- If you would like to chat with other contributors to pycst, consider joining the [![Gitter](https://badges.gitter.im/pycst/general.svg)](https://gitter.im/pycst/general?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
 
 ## Contributing
 
