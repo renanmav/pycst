@@ -1,32 +1,40 @@
 .common-values:
-  docker-image: circleci/python:3.6
-  working_directory: ~/repo
-  restore-cache:
+  docker-image: &docker-image circleci/python:3.7
+  working_directory: &working-directory ~/repo
+
+  # Download and cache dependencies
+  restore-cache: &restore-cache
     keys:
     - v1-dependencies-{{ checksum "requirements.txt" }}
+    # fallback to using the latest cache if no exact match is found
     - v1-dependencies-
-  create-venv:
+
+  create-venv: &create-venv
     name: Create virtualenv
     command: |
       /usr/local/bin/python3 -m venv venv
-  save-cache:
+
+  save-cache: &save-cache
     paths:
     - ./venv
     key: v1-dependencies-{{ checksum "requirements.txt" }}
-.lint-steps:
+
+  install-package: &install-package
+    name: Install package
+    command: |
+      . venv/bin/activate
+      venv/bin/python3 -m pip install -e .[test_deps]
+
+
+
+.lint-steps: &lint-steps
   docker:
-  - image: circleci/python:3.6
-  working_directory: ~/repo
+  - image: *docker-image
+  working_directory: *working-directory
   steps:
   - checkout
-  - restore_cache:
-      keys:
-      - v1-dependencies-{{ checksum "requirements.txt" }}
-      - v1-dependencies-
-  - run:
-      name: Create virtualenv
-      command: |
-        /usr/local/bin/python3 -m venv venv
+  - restore_cache: *restore-cache
+  - run: *create-venv
   - run:
       name: Check code style (PEP8)
       command: |
@@ -40,147 +48,50 @@
           --statistics \
           --max-line-length=120 \
           src/ tests/
-  - save_cache:
-      paths:
-      - ./venv
-      key: v1-dependencies-{{ checksum "requirements.txt" }}
-.build-and-test-steps:
+  - save_cache: *save-cache
+
+
+.build-and-test-steps: &build-and-test-steps
   docker:
-  - image: circleci/python:3.6
-  working_directory: ~/repo
+  - image: *docker-image
+  working_directory: *working-directory
   steps:
   - checkout
-  - restore_cache:
-      keys:
-      - v1-dependencies-{{ checksum "requirements.txt" }}
-      - v1-dependencies-
-  - run:
-      name: Create virtualenv
-      command: |
-        /usr/local/bin/python3 -m venv venv
-  - save_cache:
-      paths:
-      - ./venv
-      key: v1-dependencies-{{ checksum "requirements.txt" }}
-  - run:
-      name: Install package
-      command: |
-        . venv/bin/activate
-        venv/bin/python3 -m pip install -e .[test_deps]
+  - restore_cache: *restore-cache
+  - run: *create-venv
+  - save_cache: *save-cache
+  - run: *install-package
   - run:
       name: Run tests
       command: |
         . venv/bin/activate
         venv/bin/python3 -m pytest --cov=pycst tests/
-.pip-check:
+
+.pip-check-steps: &pip-check-steps
   docker:
-  - image: circleci/python:3.6
-  working_directory: ~/repo
+  - image: *docker-image
+  working_directory: *working-directory
   steps:
   - checkout
-  - restore_cache:
-      keys:
-      - v1-dependencies-{{ checksum "requirements.txt" }}
-      - v1-dependencies-
-  - run:
-      name: Create virtualenv
-      command: |
-        /usr/local/bin/python3 -m venv venv
-  - save_cache:
-      paths:
-      - ./venv
-      key: v1-dependencies-{{ checksum "requirements.txt" }}
+  - restore_cache: *restore-cache
+  - run: *create-venv
+  - save_cache: *save-cache
   - run:
       name: Run pip check
       command: |
         . venv/bin/activate
         sudo venv/bin/python -m pip install -e .
         pip check
+
 version: 2
 jobs:
   lint:
-    docker:
-    - image: circleci/python:3.6
-    working_directory: ~/repo
-    steps:
-    - checkout
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ checksum "requirements.txt" }}
-        - v1-dependencies-
-    - run:
-        name: Create virtualenv
-        command: |
-          /usr/local/bin/python3 -m venv venv
-    - run:
-        name: Check code style (PEP8)
-        command: |
-          . venv/bin/activate
-          venv/bin/python3 -m pip install flake8
-          venv/bin/python3 -m flake8 \
-            --ignore=E731,W503 \
-            --filename=*.py \
-            --exclude=__init__.py \
-            --show-source \
-            --statistics \
-            --max-line-length=120 \
-            src/ tests/
-    - save_cache:
-        paths:
-        - ./venv
-        key: v1-dependencies-{{ checksum "requirements.txt" }}
+    <<: *lint-steps
   build-and-test:
-    docker:
-    - image: circleci/python:3.6
-    working_directory: ~/repo
-    steps:
-    - checkout
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ checksum "requirements.txt" }}
-        - v1-dependencies-
-    - run:
-        name: Create virtualenv
-        command: |
-          /usr/local/bin/python3 -m venv venv
-    - save_cache:
-        paths:
-        - ./venv
-        key: v1-dependencies-{{ checksum "requirements.txt" }}
-    - run:
-        name: Install package
-        command: |
-          . venv/bin/activate
-          venv/bin/python3 -m pip install -e .[test_deps]
-    - run:
-        name: Run tests
-        command: |
-          . venv/bin/activate
-          venv/bin/python3 -m pytest --cov=pycst tests/
+    <<: *build-and-test-steps
   pip-check:
-    docker:
-    - image: circleci/python:3.6
-    working_directory: ~/repo
-    steps:
-    - checkout
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ checksum "requirements.txt" }}
-        - v1-dependencies-
-    - run:
-        name: Create virtualenv
-        command: |
-          /usr/local/bin/python3 -m venv venv
-    - save_cache:
-        paths:
-        - ./venv
-        key: v1-dependencies-{{ checksum "requirements.txt" }}
-    - run:
-        name: Run pip check
-        command: |
-          . venv/bin/activate
-          sudo venv/bin/python -m pip install -e .
-          pip check
+    <<: *pip-check-steps
+
 workflows:
   version: 2
   build-and-test-all:
