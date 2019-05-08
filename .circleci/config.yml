@@ -186,7 +186,5 @@ workflows:
   build-and-test-all:
     jobs:
     - lint
-    - build-and-test:
-        context: python-projects
-    - pip-check:
-        context: python-projects
+    - build-and-test
+    - pip-check
