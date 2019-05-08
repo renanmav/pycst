@@ -8,17 +8,24 @@ We love pull requests from everyone. By participating in this project, you agree
 
 - If you found a bug or need a new feature, you can submit an [issue](https://github.com/renanmav/pycst/issues)
 
-- If you would like to chat with other contributors to pycst, consider joining the [gitter](https://gitter.im/pycst) chat channel.
+- If you would like to chat with other contributors to pycst, consider joining the [[![Gitter](https://badges.gitter.im/pycst/general.svg)](https://gitter.im/pycst/general?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge).
 
 ## Contributing
 
 1. Fork, then clone the repo:
+
    `git clone git@github.com:your-username/pycst.git`
+   
 2. Install the requirements:
+
    `pip install -r requirements.txt`
+   
 3. Make your change, add tests for yout change.
-4. Make sure to comply with our coding style
+
+4. Make sure to comply with our coding style.
+
 5. Make sure the tests pass:
+
    `pytest .`
 
 Push to your fork and submit a pull request using our PR template.
