@@ -12,4 +12,5 @@ def version():
     with open(join(dirname(__file__), 'resources', 'VERSION')) as f:
         return f.read().strip()
 
+
 __version__ = version()
