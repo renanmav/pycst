@@ -3,6 +3,11 @@
     "python.linting.pep8Enabled": true,
     "python.linting.enabled": true,
     "python.linting.pep8Args": [
-        "--max-line-length=120"
+        "--max-line-length=120",
+        "--ignore=E731,W503",
+        "--filename=*.py",
+        "--exclude=__init__.py",
+        "--show-source",
+        "--statistics",
     ]
 }
