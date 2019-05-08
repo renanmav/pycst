@@ -1,6 +1,6 @@
 # Contributing to pycst
 
-Hello and Welcome do pycst!
+Hello and Welcome to pycst!
 
 We love pull requests from everyone. By participating in this project, you agree to abide by our [code of conduct](CODE-OF-CONDUCT.md).
 
