@@ -25,6 +25,11 @@
       . venv/bin/activate
       venv/bin/python3 -m pip install -e .[test_deps]
 
+  run-tests: &run-tests
+    name: Run tests
+    command: |
+      . venv/bin/activate
+      venv/bin/python3 -m pytest --cov=pycst tests/
 
 
 .lint-steps: &lint-steps
@@ -51,7 +56,7 @@
   - save_cache: *save-cache
 
 
-.build-and-test-steps: &build-and-test-steps
+.build-steps: &build-steps
   docker:
   - image: *docker-image
   working_directory: *working-directory
@@ -61,11 +66,7 @@
   - run: *create-venv
   - save_cache: *save-cache
   - run: *install-package
-  - run:
-      name: Run tests
-      command: |
-        . venv/bin/activate
-        venv/bin/python3 -m pytest --cov=pycst tests/
+
 
 .pip-check-steps: &pip-check-steps
   docker:
@@ -87,15 +88,15 @@ version: 2
 jobs:
   lint:
     <<: *lint-steps
-  build-and-test:
-    <<: *build-and-test-steps
+  build:
+    <<: *build-steps
   pip-check:
     <<: *pip-check-steps
 
 workflows:
   version: 2
-  build-and-test-all:
+  build-all:
     jobs:
     - lint
-    - build-and-test
+    - build
     - pip-check
