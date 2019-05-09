@@ -22,7 +22,6 @@
   steps:
   - checkout
   - restore_cache: *restore-cache
-  - run: *create-venv
   - run:
       name: Check code style (PEP8)
       command: |
