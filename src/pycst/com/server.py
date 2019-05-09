@@ -38,3 +38,21 @@ def list_methods(interface):
             methods.append(method)
 
     return methods
+
+
+def get_method(interface, method):
+    """
+    Get a specific method
+
+    Parameters:
+    ----------
+    interface : interface of CST Studio
+    method : string
+        Specific method that you want
+
+    Returns:
+    ----------
+    instance : function
+        Instance of the method
+    """
+    return getattr(interface, method)
