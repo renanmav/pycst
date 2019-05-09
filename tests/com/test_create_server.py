@@ -1,7 +1,3 @@
-import win32com
-
-""" in case I want to run directly this script
-
 import os
 import sys
 import inspect
@@ -12,11 +8,11 @@ parentdir = os.path.dirname(parentdir)
 
 sys.path.insert(0, parentdir)
 
-from src.pycst.com.server import create_server  # noqa: E402
-"""
-
-from pycst.com.server import create_server
+from src.pycst.com.server import create_server, list_methods  # noqa: E402
 
 cst = create_server()
 
-assert type(cst) == win32com.client.CDispatch
+methods = ['Active3D', 'ActiveDS', 'CLSID', 'CloseProject', 'FileNew', 'NewCS', 'NewDS', 'NewDesign', 'NewEMS',
+           'NewMPS', 'NewMWS', 'NewPCBS', 'NewPS', 'OpenDesign', 'OpenFile', 'Quit', 'ReleaseUniqueID', 'coclass_clsid']
+
+assert list_methods(cst) == methods
