@@ -17,6 +17,7 @@ def get_long_description(filename='README.md'):
     with open(filename, 'r') as file:
         return file.read()
 
+
 setup(
     name=MODULE_NAME,
     description="CST Studio Suite API for python",
